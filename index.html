@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Real Estate | Real Estate AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e0eaf4 0%, #cfdef3 100%);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* main card container */
+        .assistant-card {
+            max-width: 700px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* header - ACME INC. style */
+        .acme-header {
+            background: #0a2b3e;
+            padding: 1.4rem 2rem;
+            border-bottom: 4px solid #f5b042;
+        }
+
+        .acme-header h1 {
+            color: white;
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            font-family: 'Inter', monospace;
+        }
+
+        .acme-header h1 span {
+            font-weight: 300;
+            font-size: 1.2rem;
+            letter-spacing: 0;
+        }
+
+        /* chat / conversation area */
+        .chat-area {
+            padding: 1.8rem 2rem;
+            background: #fefcf5;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* message bubbles */
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 90%;
+            animation: fadeSlideUp 0.25s ease-out;
+        }
+
+        .message.agent {
+            align-self: flex-start;
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .bubble {
+            padding: 0.9rem 1.3rem;
+            border-radius: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.45;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .agent .bubble {
+            background: #e9edf2;
+            color: #1a2c3e;
+            border-bottom-left-radius: 0.4rem;
+            border-top-right-radius: 1.5rem;
+        }
+
+        .user .bubble {
+            background: #0a2b3e;
+            color: white;
+            border-bottom-right-radius: 0.4rem;
+            border-top-left-radius: 1.5rem;
+        }
+
+        .agent-name {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            margin-left: 0.5rem;
+            color: #5b6f82;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        /* option buttons grid */
+        .options-panel {
+            margin-top: 0.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .option-btn {
+            background: white;
+            border: 1.5px solid #cbd5e1;
+            padding: 0.6rem 1.2rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            font-family: inherit;
+        }
+
+        .option-btn:hover {
+            background: #f5b04220;
+            border-color: #f5b042;
+            transform: translateY(-1px);
+        }
+
+        .option-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* inline action buttons inside agent message (for dynamic choices) */
+        .inline-choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-top: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .choice-chip {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e6;
+            border-radius: 40px;
+            padding: 0.5rem 1.1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #0f2c3f;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .choice-chip:hover {
+            background: #f5b042;
+            border-color: #e09d2c;
+            color: #1e2a36;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* reset / restart button */
+        .reset-btn {
+            background: #f0f2f5;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #4a627a;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reset-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* footer */
+        .footer-meta {
+            background: #ffffff;
+            padding: 0.8rem 2rem 1.2rem;
+            border-top: 1px solid #edece4;
+            font-size: 0.7rem;
+            color: #8b9aad;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* scrolling behavior */
+        .chat-area {
+            max-height: 500px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* responsive */
+        @media (max-width: 550px) {
+            .chat-area {
+                padding: 1.2rem;
+            }
+            .option-btn, .choice-chip {
+                font-size: 0.8rem;
+                padding: 0.45rem 1rem;
+            }
+            .acme-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* something else input simulation? keep clean */
+        .user-input-sim {
+            margin-top: 8px;
+        }
+        .sim-text {
+            font-size: 0.75rem;
+            color: #6c7e94;
+            font-style: italic;
+            padding: 0.2rem 0 0 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<div class="assistant-card">
+    <div class="acme-header">
+        <h1>Real Estate. <span>✦ realty AI</span></h1>
+    </div>
+    <div class="chat-area" id="chatContainer">
+        <!-- messages injected dynamically -->
+        <div class="message agent" id="initialMsg">
+            <div class="agent-name">🏢 ACME REALTY AI</div>
+            <div class="bubble">
+                Hello Ritik!<br><br>
+                Welcome to Real Estate Agency!<br>
+                We have a lot of property for sale.<br><br>
+                What would you like to do?
+            </div>
+            <div class="inline-choices" id="mainOptions">
+                <button class="choice-chip" data-action="buy_house">🏠 Buy a house</button>
+                <button class="choice-chip" data-action="buy_apartment">🏙️ Buy an apartment</button>
+                <button class="choice-chip" data-action="buy_condo">🏢 Buy a condo</button>
+                <button class="choice-chip" data-action="something_else">✨ Something else</button>
+            </div>
+        </div>
+    </div>
+    <div class="footer-meta">
+        <div>🏡 ACME smart assistant — always here to help</div>
+        <button class="reset-btn" id="resetChatBtn">⟳ Start over</button>
+    </div>
+</div>
+
+<script>
+    // --- Real Estate AI State & Logic ---
+    // We'll store conversation state to manage dynamic follow-ups
+    let currentState = "main_menu";  // main_menu, house_listing, apartment_listing, condo_listing, something_else_mode, after_purchase_interest
+    
+    // Helper: scroll chat to bottom
+    function scrollToBottom() {
+        const chatArea = document.getElementById('chatContainer');
+        if(chatArea) chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    // Helper to remove existing inline choices from a specific message (if needed)
+    // but we will replace or add new messages. For simplicity, we add fresh messages and keep history.
+    // But to avoid duplication of interactive options, we will manage by appending new agent messages
+    // with fresh inline choices. The main menu options are inside the initial message but after user
+    // clicks, we disable/hide them? Better approach: When user makes a selection, we add a new agent
+    // response with next options, but we also keep the previous buttons but they become stale.
+    // To improve UX, we will remove or disable the inline-choices from the initial message when we move forward,
+    // but actually we can just let them stay but user might click again — we prevent by state guard.
+    // A clean approach: after each major selection, we clear the entire chat and rebuild? Not ideal.
+    // Instead: we add new messages, and we also replace the inline-choices container of the last agent message
+    // if necessary. But to match the "create this type of AI" vibe, we'll add messages and also optionally disable
+    // old choices by setting pointer-events? But better: when user clicks any choice chip, we check the current state
+    // and prevent invalid transitions. I'll also add an optional "reset" function.
+    
+    // We'll keep reference to mainOptions container to disable it after first real interaction? Not mandatory,
+    // but to simulate proper conversational AI, after any action we will disable the first menu buttons
+    // so the user can't click them again while deep in conversation. Also we can show a "restart" button.
+    
+    let mainOptionsDisabled = false;
+    
+    function disableMainMenuOptions() {
+        const mainOptionsDiv = document.getElementById('mainOptions');
+        if (mainOptionsDiv && !mainOptionsDisabled) {
+            mainOptionsDisabled = true;
+            const btns = mainOptionsDiv.querySelectorAll('.choice-chip');
+            btns.forEach(btn => {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+                btn.setAttribute('disabled', 'disabled');
+            });
+        }
+    }
+    
+    // Function to add a new message (agent or user)
+    function addMessage(role, text, showName = true) {
+        const chatContainer = document.getElementById('chatContainer');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role}`;
+        
+        if (role === 'agent') {
+            if (showName) {
+                const nameSpan = document.createElement('div');
+                nameSpan.className = 'agent-name';
+                nameSpan.innerText = '🏢 ACME REALTY AI';
+                messageDiv.appendChild(nameSpan);
+            }
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.innerHTML = text; // allow simple HTML line breaks
+            messageDiv.appendChild(bubble);
+        } else {
+            // user message
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.innerText = text;
+            messageDiv.appendChild(bubble);
+        }
+        
+        chatContainer.appendChild(messageDiv);
+        scrollToBottom();
+        return messageDiv;
+    }
+    
+    // Add agent message with inline choice buttons (dynamic)
+    function addAgentMessageWithChoices(text, choicesArray) {
+        const chatContainer = document.getElementById('chatContainer');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message agent';
+        
+        const nameSpan = document.createElement('div');
+        nameSpan.className = 'agent-name';
+        nameSpan.innerText = '🏢 ACME REALTY AI';
+        messageDiv.appendChild(nameSpan);
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = text;
+        messageDiv.appendChild(bubble);
+        
+        // choices container
+        const choicesContainer = document.createElement('div');
+        choicesContainer.className = 'inline-choices';
+        
+        choicesArray.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-chip';
+            btn.innerText = choice.label;
+            btn.setAttribute('data-value', choice.value);
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // handle selection
+                handleUserChoice(choice.value, choice.context);
+            });
+            choicesContainer.appendChild(btn);
+        });
+        
+        messageDiv.appendChild(choicesContainer);
+        chatContainer.appendChild(messageDiv);
+        scrollToBottom();
+        return messageDiv;
+    }
+    
+    // Generic handler for all user selections (choice chips)
+    function handleUserChoice(action, customData = null) {
+        // First, disable main menu options if not already disabled (first interaction)
+        if (!mainOptionsDisabled && currentState === "main_menu") {
+            disableMainMenuOptions();
+        }
+        
+        // Add user message representation based on action
+        let userReadable = "";
+        if (action === "buy_house") userReadable = "Buy a house";
+        else if (action === "buy_apartment") userReadable = "Buy an apartment";
+        else if (action === "buy_condo") userReadable = "Buy a condo";
+        else if (action === "something_else") userReadable = "Something else";
+        else if (action === "see_house_details") userReadable = "Tell me more about the houses";
+        else if (action === "see_apartment_details") userReadable = "Show apartment options";
+        else if (action === "see_condo_details") userReadable = "Show condo options";
+        else if (action === "request_virtual_tour") userReadable = "Request virtual tour";
+        else if (action === "contact_agent") userReadable = "Contact an agent";
+        else if (action === "back_to_main") userReadable = "Go back to main menu";
+        else if (action === "explore_something_else") userReadable = "Tell me more about other services";
+        else userReadable = "Select option";
+        
+        addMessage('user', userReadable);
+        
+        // --- AI logic based on current state & action ---
+        if (currentState === "main_menu") {
+            if (action === "buy_house") {
+                addAgentMessageWithChoices(
+                    "We have several houses for sale! 🏡<br><br>📍 Choose from modern villas, suburban family homes, and luxury estates. What would you like?",
+                    [
+                        { label: "📋 Show house listings", value: "see_house_details", context: "house" },
+                        { label: "📞 Contact an agent", value: "contact_agent", context: "general" },
+                        { label: "🔙 Back to menu", value: "back_to_main", context: "reset" }
+                    ]
+                );
+                currentState = "house_listing";
+            } 
+            else if (action === "buy_apartment") {
+                addAgentMessageWithChoices(
+                    "Excellent choice! 🏙️ We offer stunning downtown apartments, penthouses, and cozy lofts.<br><br> Which style sparks your interest?",
+                    [
+                        { label: "🏙️ View apartments", value: "see_apartment_details", context: "apartment" },
+                        { label: "📞 Schedule a viewing", value: "contact_agent", context: "general" },
+                        { label: "◀️ Main menu", value: "back_to_main", context: "reset" }
+                    ]
+                );
+                currentState = "apartment_listing";
+            }
+            else if (action === "buy_condo") {
+                addAgentMessageWithChoices(
+                    "Condos combine convenience and style! 🏢 Our portfolio includes beachfront condos, city-center gems, and resort-style communities.<br><br> How can I assist?",
+                    [
+                        { label: "✨ Show condo options", value: "see_condo_details", context: "condo" },
+                        { label: "📲 Talk to specialist", value: "contact_agent", context: "general" },
+                        { label: "↩️ Return to start", value: "back_to_main", context: "reset" }
+                    ]
+                );
+                currentState = "condo_listing";
+            }
+            else if (action === "something_else") {
+                addAgentMessageWithChoices(
+                    "Of course! Beyond residential sales, ACME Realty offers: 🏢 commercial spaces, 📈 investment properties, and 🌿 land acquisition.<br><br> What are you looking for?",
+                    [
+                        { label: "🏭 Commercial property", value: "explore_something_else", context: "commercial" },
+                        { label: "📊 Investment analysis", value: "explore_something_else", context: "investment" },
+                        { label: "🌳 Land / lots", value: "explore_something_else", context: "land" },
+                        { label: "🔙 Back", value: "back_to_main", context: "reset" }
+                    ]
+                );
+                currentState = "something_else_mode";
+            }
+        }
+        else if (currentState === "house_listing") {
+            if (action === "see_house_details") {
+                addAgentMessageWithChoices(
+                    "🏡 **Featured Houses:**<br> • 🌲 Cedar Grove Villa - $450k, 4bd, pool<br> • 🏡 Maple Street Colonial - $375k, 3bd, garden<br> • 🌅 Sunset Ranch Estate - $895k, 5bd, lake view<br><br> Would you like a virtual tour or connect with an agent?",
+                    [
+                        { label: "🎥 Virtual tour request", value: "request_virtual_tour", context: "house" },
+                        { label: "📞 Call an agent", value: "contact_agent", context: "general" },
+                        { label: "🏠 Main menu", value: "back_to_main", context: "reset" }
+                    ]
+                );
+                currentState = "after_purchase_interest";
+            }
+            else if (action === "contact_agent") {
+                addMessage('agent', "📞 Our expert John is ready! Call (555) 202-REALTY or email john@acmerealty.com. I can also schedule a callback — just reply 'callback'.");
+                currentState = "after_purchase_interest";
+            }
+            else if (action === "back_to_main") {
+                resetToMainMenu();
+            }
+            else {
+                // fallback
+                resetToMainMenu();
+            }
+        }
+        else if (currentState === "apartment_listing") {
+            if (action === "see_apartment_details") {
+                addAgentMessageWithChoices(
+                    "🏙️ **Prime Apartments:**<br> • The Metro Loft - $320k, 2bd, cityv  sview<br> • Harbor Lights - $540k, 3bd, waterfront<br> • Sky Tower Residence - $780k, 2bd luxury penthouse<br><br> Want photos or a private showing?",
+                    [
+                        { label: "📸 Request photo gallery", value: "request_virtual_tour", context: "apartment" },
+                        { label: "📞 Contact agent", value: "contact_agent", context: "general" },
+                        { label: "🏠 Main menu", value: "back_to_main", context: "reset" }
+                    ]
+                );
+                currentState = "after_purchase_interest";
+            } else if (action === "contact_agent") {
+                addMessage('agent', "Our apartment specialist Maria is available now. Call (555) 987-UNIT or request a callback via the chat!");
+                currentState = "after_purchase_interest";
+            } else if (action === "back_to_main") {
+                resetToMainMenu();
+            } else {
+                resetToMainMenu();
+            }
+        }
+        else if (currentState === "condo_listing") {
+            if (action === "see_condo_details") {
+                addAgentMessageWithChoices(
+                    "🏢 **Hot Condo Deals:**<br> • Seaside Condo Resort - $410k, 2bd, beach access<br> • Urban Core Condos - $295k, 1bd, modern amenities<br> • The Pinnacle - $675k, 3bd, rooftop terrace<br><br> Let’s arrange a walkthrough?",
+                    [
+                        { label: "📅 Schedule showing", value: "contact_agent", context: "general" },
+                        { label: "💎 Get more details", value: "request_virtual_tour", context: "condo" },
+                        { label: "🔙 Back", value: "back_to_main", context: "reset" }
+                    ]
+                );
+                currentState = "after_purchase_interest";
+            } else if (action === "contact_agent") {
+                addMessage('agent', "Our condo concierge will reach out within minutes! You can also visit our office downtown.");
+                currentState = "after_purchase_interest";
+            } else if (action === "back_to_main") {
+                resetToMainMenu();
+            } else {
+                resetToMainMenu();
+            }
+        }
+        else if (currentState === "something_else_mode") {
+            if (action === "explore_something_else") {
+                let contextMsg = "";
+                if (customData === "commercial") contextMsg = "🏭 Commercial spaces: retail stores, office towers, industrial warehouses. Let's connect you with our commercial broker.";
+                else if (customData === "investment") contextMsg = "📈 Investment properties: multi-family units, REIT opportunities, high-yield rentals. Our financial advisors can assist.";
+                else if (customData === "land") contextMsg = "🌳 Land & lots: 5+ acre parcels, agricultural land, development-ready plots. Contact our land acquisition team.";
+                else contextMsg = "We offer tailored real estate solutions, property management, and auction services. How can we assist further?";
+                addAgentMessageWithChoices(
+                    `${contextMsg}<br><br>Would you like to schedule a consultation?`,
+                    [
+                        { label: "📅 Consultation", value: "contact_agent", context: "general" },
+                        { label: "🏠 Return to main", value: "back_to_main", context: "reset" }
+                    ]
+                );
+                currentState = "after_purchase_interest";
+            }
+            else if (action === "back_to_main") {
+                resetToMainMenu();
+            }
+            else {
+                resetToMainMenu();
+            }
+        }
+        else if (currentState === "after_purchase_interest") {
+            if (action === "request_virtual_tour") {
+                addMessage('agent', "🎥 Awesome! Our virtual tour system will send a 3D walkthrough link to your email. Please provide your email address or simply reply 'demo'. John, would you like me to note your interest?");
+                // keep state
+            }
+            else if (action === "contact_agent") {
+                addMessage('agent', "📞 One moment, connecting you with a senior real estate advisor. Expect a call within 10 minutes or use live chat on our website. Thank you, John!");
+            }
+            else if (action === "back_to_main") {
+                resetToMainMenu();
+            }
+            else {
+                // any fallback option - maybe just main menu
+                resetToMainMenu();
+            }
+        }
+        else {
+            // fallback reset
+            resetToMainMenu();
+        }
+    }
+    
+    // Complete reset: clear all messages except initial agent greeting and fresh options
+    function resetToMainMenu() {
+        const chatContainer = document.getElementById('chatContainer');
+        // Clear all messages
+        while (chatContainer.firstChild) {
+            chatContainer.removeChild(chatContainer.firstChild);
+        }
+        // Rebuild initial message exactly like original
+        const initialMsgDiv = document.createElement('div');
+        initialMsgDiv.className = 'message agent';
+        const nameSpan = document.createElement('div');
+        nameSpan.className = 'agent-name';
+        nameSpan.innerText = '🏢 ACME REALTY AI';
+        initialMsgDiv.appendChild(nameSpan);
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = 'Hello John!<br><br>Welcome to Real Estate Agency!<br>We have a lot of property for sale.<br><br>What would you like to do?';
+        initialMsgDiv.appendChild(bubble);
+        const choicesDiv = document.createElement('div');
+        choicesDiv.className = 'inline-choices';
+        choicesDiv.id = 'mainOptions';
+        const actions = [
+            { label: '🏠 Buy a house', value: 'buy_house' },
+            { label: '🏙️ Buy an apartment', value: 'buy_apartment' },
+            { label: '🏢 Buy a condo', value: 'buy_condo' },
+            { label: '✨ Something else', value: 'something_else' }
+        ];
+        actions.forEach(act => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-chip';
+            btn.innerText = act.label;
+            btn.addEventListener('click', () => handleUserChoice(act.value));
+            choicesDiv.appendChild(btn);
+        });
+        initialMsgDiv.appendChild(choicesDiv);
+        chatContainer.appendChild(initialMsgDiv);
+        
+        // reset state variables
+        currentState = "main_menu";
+        mainOptionsDisabled = false;
+        scrollToBottom();
+    }
+    
+    // Attach reset button handler
+    document.getElementById('resetChatBtn').addEventListener('click', () => {
+        resetToMainMenu();
+    });
+    
+    // Add event listener to initial buttons via delegation (but also we recreate on reset)
+    // to be safe, we also attach listeners after DOM ready for dynamically created ones
+    document.addEventListener('click', (e) => {
+        if (e.target.classList && e.target.classList.contains('choice-chip')) {
+            // but we already attach specific per button in creation.
+            // ensure if any chip without handler (just in case) fallback
+            if (!e.target.getAttribute('data-listener-attached')) {
+                // but we handle via creation event listeners, safe.
+            }
+        }
+    });
+    
+    // Initialize: ensure that the initial buttons have correct handlers (they are created statically in HTML but we override by reset logic)
+    // However, the initial HTML contains static #mainOptions buttons. We must attach listeners to them as well.
+    function bindInitialStaticButtons() {
+        const mainStatic = document.querySelectorAll('#mainOptions .choice-chip');
+        mainStatic.forEach(btn => {
+            // remove existing listeners by replacing with clone? but easier: add new click, prevent duplicate.
+            // But we have reset function that rebuilds, but if user clicks static before any action, we want to handle.
+            // we can add listener, but we also don't want double handler. We'll replace with fresh listener.
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            const actionVal = newBtn.getAttribute('data-action');
+            if (actionVal) {
+                newBtn.addEventListener('click', () => handleUserChoice(actionVal));
+            } else {
+                // infer from text
+                let inferred = "";
+                if (newBtn.innerText.includes("house")) inferred = "buy_house";
+                else if (newBtn.innerText.includes("apartment")) inferred = "buy_apartment";
+                else if (newBtn.innerText.includes("condo")) inferred = "buy_condo";
+                else if (newBtn.innerText.includes("Something")) inferred = "something_else";
+                if (inferred) newBtn.addEventListener('click', () => handleUserChoice(inferred));
+            }
+        });
+    }
+    
+    // call initial binding for static HTML
+    bindInitialStaticButtons();
+    // also handle case where reset re-creates so inside reset we create fresh listeners, perfect.
+    // ensure mainOptionsDisabled flag reset.
+    scrollToBottom();
+</script>
+</body>
+</html>
