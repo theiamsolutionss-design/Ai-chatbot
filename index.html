@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Real Estate | Real Estate AI Assistant</title>
+    <title>Real Estate AI Assistant | ACME Realty (Frontend Demo)</title>
     <style>
         * {
             margin: 0;
@@ -21,18 +21,17 @@
             padding: 20px;
         }
 
-        /* main card container */
         .assistant-card {
-            max-width: 700px;
+            max-width: 750px;
             width: 100%;
             background: #ffffff;
             border-radius: 2rem;
             box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* header - ACME INC. style */
         .acme-header {
             background: #0a2b3e;
             padding: 1.4rem 2rem;
@@ -44,26 +43,26 @@
             font-size: 1.9rem;
             font-weight: 700;
             letter-spacing: -0.5px;
-            font-family: 'Inter', monospace;
         }
 
         .acme-header h1 span {
             font-weight: 300;
             font-size: 1.2rem;
-            letter-spacing: 0;
         }
 
-        /* chat / conversation area */
         .chat-area {
-            padding: 1.8rem 2rem;
+            padding: 1.5rem 2rem;
             background: #fefcf5;
-            min-height: 420px;
+            flex: 1;
+            min-height: 400px;
+            max-height: 480px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1.2rem;
         }
 
-        /* message bubbles */
         .message {
             display: flex;
             flex-direction: column;
@@ -85,20 +84,19 @@
             font-size: 1rem;
             line-height: 1.45;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            word-break: break-word;
         }
 
         .agent .bubble {
             background: #e9edf2;
             color: #1a2c3e;
             border-bottom-left-radius: 0.4rem;
-            border-top-right-radius: 1.5rem;
         }
 
         .user .bubble {
             background: #0a2b3e;
             color: white;
             border-bottom-right-radius: 0.4rem;
-            border-top-left-radius: 1.5rem;
         }
 
         .agent-name {
@@ -107,50 +105,14 @@
             margin-bottom: 0.3rem;
             margin-left: 0.5rem;
             color: #5b6f82;
-            letter-spacing: 0.3px;
             text-transform: uppercase;
         }
 
-        /* option buttons grid */
-        .options-panel {
-            margin-top: 0.75rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            align-items: center;
-        }
-
-        .option-btn {
-            background: white;
-            border: 1.5px solid #cbd5e1;
-            padding: 0.6rem 1.2rem;
-            border-radius: 60px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #1e3a5f;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-            font-family: inherit;
-        }
-
-        .option-btn:hover {
-            background: #f5b04220;
-            border-color: #f5b042;
-            transform: translateY(-1px);
-        }
-
-        .option-btn:active {
-            transform: translateY(1px);
-        }
-
-        /* inline action buttons inside agent message (for dynamic choices) */
         .inline-choices {
             display: flex;
             flex-wrap: wrap;
             gap: 0.7rem;
-            margin-top: 1rem;
-            margin-bottom: 0.2rem;
+            margin-top: 0.85rem;
         }
 
         .choice-chip {
@@ -169,43 +131,100 @@
         .choice-chip:hover {
             background: #f5b042;
             border-color: #e09d2c;
-            color: #1e2a36;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
         }
 
-        /* reset / restart button */
-        .reset-btn {
-            background: #f0f2f5;
+        .chat-input-panel {
+            background: #ffffff;
+            border-top: 1px solid #edece4;
+            padding: 1rem 2rem 1.2rem;
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            background: #f8fafc;
+            border-radius: 60px;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem 1rem;
+        }
+
+        .chat-input {
+            width: 100%;
             border: none;
-            padding: 0.5rem 1.2rem;
+            background: transparent;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            padding: 0.5rem 0;
+        }
+
+        .send-btn {
+            background: #0a2b3e;
+            border: none;
             border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #4a627a;
+            padding: 0.6rem 1.4rem;
+            color: white;
+            font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
-            margin-top: 0.5rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
         }
 
-        .reset-btn:hover {
-            background: #e2e8f0;
-            color: #1e293b;
+        .send-btn:hover {
+            background: #f5b042;
+            color: #0a2b3e;
         }
 
-        /* footer */
         .footer-meta {
             background: #ffffff;
-            padding: 0.8rem 2rem 1.2rem;
+            padding: 0.7rem 2rem 1rem;
             border-top: 1px solid #edece4;
             font-size: 0.7rem;
             color: #8b9aad;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+        }
+
+        .reset-btn {
+            background: #f0f2f5;
+            border: none;
+            padding: 0.45rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            color: #4a627a;
+            cursor: pointer;
+        }
+
+        .reset-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 6px;
+            padding: 0.6rem 1.2rem;
+            background: #e9edf2;
+            border-radius: 1.5rem;
+            width: fit-content;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #5f7f9e;
+            border-radius: 50%;
+            animation: pulse 1.2s infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes pulse {
+            0%, 60%, 100% { transform: scale(0.6); opacity: 0.5; }
+            30% { transform: scale(1); opacity: 1; }
         }
 
         @keyframes fadeSlideUp {
@@ -219,36 +238,177 @@
             }
         }
 
-        /* scrolling behavior */
-        .chat-area {
-            max-height: 500px;
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
             overflow-y: auto;
-            scroll-behavior: smooth;
+            padding: 2rem;
+            animation: slideIn 0.3s ease-out;
         }
 
-        /* responsive */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0a2b3e;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #f5b042;
+            padding-bottom: 0.5rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 0.75rem 0.5rem;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day:hover {
+            background: #f5b042;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.selected {
+            background: #0a2b3e;
+            color: white;
+        }
+
+        .calendar-day.disabled {
+            background: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .time-slot {
+            padding: 0.75rem;
+            text-align: center;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e6;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .time-slot:hover {
+            background: #f5b042;
+            border-color: #e09d2c;
+        }
+
+        .time-slot.selected {
+            background: #0a2b3e;
+            color: white;
+            border-color: #0a2b3e;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #0a2b3e;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e6;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f5b042;
+        }
+
+        .submit-btn {
+            background: #0a2b3e;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background: #f5b042;
+            color: #0a2b3e;
+        }
+
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #94a3b8;
+        }
+
+        .close-modal:hover {
+            color: #0a2b3e;
+        }
+
         @media (max-width: 550px) {
-            .chat-area {
-                padding: 1.2rem;
-            }
-            .option-btn, .choice-chip {
-                font-size: 0.8rem;
-                padding: 0.45rem 1rem;
-            }
-            .acme-header h1 {
-                font-size: 1.5rem;
-            }
-        }
-
-        /* something else input simulation? keep clean */
-        .user-input-sim {
-            margin-top: 8px;
-        }
-        .sim-text {
-            font-size: 0.75rem;
-            color: #6c7e94;
-            font-style: italic;
-            padding: 0.2rem 0 0 0.5rem;
+            .chat-area { padding: 1rem; }
+            .chat-input-panel { padding: 0.8rem 1rem; }
+            .calendar-grid { gap: 0.25rem; }
+            .calendar-day { padding: 0.5rem 0.25rem; font-size: 0.75rem; }
+            .time-slots { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -257,449 +417,532 @@
     <div class="acme-header">
         <h1>Real Estate. <span>✦ realty AI</span></h1>
     </div>
-    <div class="chat-area" id="chatContainer">
-        <!-- messages injected dynamically -->
-        <div class="message agent" id="initialMsg">
-            <div class="agent-name">🏢 ACME REALTY AI</div>
-            <div class="bubble">
-                Hello Ritik!<br><br>
-                Welcome to Real Estate Agency!<br>
-                We have a lot of property for sale.<br><br>
-                What would you like to do?
-            </div>
-            <div class="inline-choices" id="mainOptions">
-                <button class="choice-chip" data-action="buy_house">🏠 Buy a house</button>
-                <button class="choice-chip" data-action="buy_apartment">🏙️ Buy an apartment</button>
-                <button class="choice-chip" data-action="buy_condo">🏢 Buy a condo</button>
-                <button class="choice-chip" data-action="something_else">✨ Something else</button>
-            </div>
+    <div class="chat-area" id="chatContainer"></div>
+
+    <div class="chat-input-panel">
+        <div class="input-wrapper">
+            <input type="text" class="chat-input" id="chatTextInput" placeholder="Ask about properties, or type 'schedule appointment'..." autocomplete="off">
         </div>
+        <button class="send-btn" id="sendChatBtn">Send ✈️</button>
     </div>
+
     <div class="footer-meta">
-        <div>🏡 ACME smart assistant — always here to help</div>
+        <div>🏡 ACME smart assistant — real-time AI</div>
         <button class="reset-btn" id="resetChatBtn">⟳ Start over</button>
     </div>
 </div>
 
+<!-- Modal for Appointment Scheduling -->
+<div id="appointmentModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div class="modal-header">📅 Schedule an Appointment</div>
+        
+        <!-- Step 1: Select Date -->
+        <div id="step1">
+            <h3 style="margin-bottom: 1rem;">Select Date</h3>
+            <div id="calendar" class="calendar-grid"></div>
+            <button onclick="nextToTime()" class="submit-btn" id="nextToTimeBtn" style="background: #f5b042; color: #0a2b3e;">Next →</button>
+        </div>
+        
+        <!-- Step 2: Select Time -->
+        <div id="step2" style="display: none;">
+            <h3 style="margin-bottom: 1rem;">Select Time Slot</h3>
+            <div id="timeSlots" class="time-slots"></div>
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button onclick="prevToDate()" class="submit-btn" style="background: #94a3b8;">← Back</button>
+                <button onclick="nextToForm()" class="submit-btn" id="nextToFormBtn" style="background: #f5b042; color: #0a2b3e;">Next →</button>
+            </div>
+        </div>
+        
+        <!-- Step 3: Form Details -->
+        <div id="step3" style="display: none;">
+            <h3 style="margin-bottom: 1rem;">Your Details</h3>
+            <form id="appointmentForm">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="fullName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="phone" required placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label>Property Interest</label>
+                    <select id="propertyInterest">
+                        <option value="Buying a House">🏠 Buying a House</option>
+                        <option value="Buying an Apartment">🏙️ Buying an Apartment</option>
+                        <option value="Selling Property">💰 Selling Property</option>
+                        <option value="Renting">🔑 Renting</option>
+                        <option value="Investment">📈 Investment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Additional Message (Optional)</label>
+                    <textarea id="message" rows="3" placeholder="Any specific requirements..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">✅ Confirm Appointment</button>
+            </form>
+            <button onclick="prevToTime()" class="submit-btn" style="background: #94a3b8; margin-top: 0.5rem;">← Back</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    // --- Real Estate AI State & Logic ---
-    // We'll store conversation state to manage dynamic follow-ups
-    let currentState = "main_menu";  // main_menu, house_listing, apartment_listing, condo_listing, something_else_mode, after_purchase_interest
+    // ========== FRONTEND DEMO - NO BACKEND DEPENDENCIES ==========
+    let currentBotMessageElement = null;
+    let isGenerating = false;
     
-    // Helper: scroll chat to bottom
+    // Appointment Data
+    let selectedDate = null;
+    let selectedTime = null;
+    let currentStep = 1;
+
+    // ========== UI FUNCTIONS ==========
     function scrollToBottom() {
         const chatArea = document.getElementById('chatContainer');
-        if(chatArea) chatArea.scrollTop = chatArea.scrollHeight;
+        if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
     }
 
-    // Helper to remove existing inline choices from a specific message (if needed)
-    // but we will replace or add new messages. For simplicity, we add fresh messages and keep history.
-    // But to avoid duplication of interactive options, we will manage by appending new agent messages
-    // with fresh inline choices. The main menu options are inside the initial message but after user
-    // clicks, we disable/hide them? Better approach: When user makes a selection, we add a new agent
-    // response with next options, but we also keep the previous buttons but they become stale.
-    // To improve UX, we will remove or disable the inline-choices from the initial message when we move forward,
-    // but actually we can just let them stay but user might click again — we prevent by state guard.
-    // A clean approach: after each major selection, we clear the entire chat and rebuild? Not ideal.
-    // Instead: we add new messages, and we also replace the inline-choices container of the last agent message
-    // if necessary. But to match the "create this type of AI" vibe, we'll add messages and also optionally disable
-    // old choices by setting pointer-events? But better: when user clicks any choice chip, we check the current state
-    // and prevent invalid transitions. I'll also add an optional "reset" function.
-    
-    // We'll keep reference to mainOptions container to disable it after first real interaction? Not mandatory,
-    // but to simulate proper conversational AI, after any action we will disable the first menu buttons
-    // so the user can't click them again while deep in conversation. Also we can show a "restart" button.
-    
-    let mainOptionsDisabled = false;
-    
-    function disableMainMenuOptions() {
-        const mainOptionsDiv = document.getElementById('mainOptions');
-        if (mainOptionsDiv && !mainOptionsDisabled) {
-            mainOptionsDisabled = true;
-            const btns = mainOptionsDiv.querySelectorAll('.choice-chip');
-            btns.forEach(btn => {
-                btn.style.opacity = '0.5';
-                btn.style.pointerEvents = 'none';
-                btn.setAttribute('disabled', 'disabled');
-            });
-        }
-    }
-    
-    // Function to add a new message (agent or user)
-    function addMessage(role, text, showName = true) {
+    function addMessage(role, text, showName = true, isStreamingMessage = false) {
         const chatContainer = document.getElementById('chatContainer');
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${role}`;
         
-        if (role === 'agent') {
-            if (showName) {
-                const nameSpan = document.createElement('div');
-                nameSpan.className = 'agent-name';
-                nameSpan.innerText = '🏢 ACME REALTY AI';
-                messageDiv.appendChild(nameSpan);
-            }
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            bubble.innerHTML = text; // allow simple HTML line breaks
-            messageDiv.appendChild(bubble);
-        } else {
-            // user message
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            bubble.innerText = text;
-            messageDiv.appendChild(bubble);
+        if (role === 'agent' && showName) {
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'agent-name';
+            nameSpan.innerText = '🏢 ACME REALTY AI';
+            messageDiv.appendChild(nameSpan);
         }
-        
-        chatContainer.appendChild(messageDiv);
-        scrollToBottom();
-        return messageDiv;
-    }
-    
-    // Add agent message with inline choice buttons (dynamic)
-    function addAgentMessageWithChoices(text, choicesArray) {
-        const chatContainer = document.getElementById('chatContainer');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message agent';
-        
-        const nameSpan = document.createElement('div');
-        nameSpan.className = 'agent-name';
-        nameSpan.innerText = '🏢 ACME REALTY AI';
-        messageDiv.appendChild(nameSpan);
         
         const bubble = document.createElement('div');
         bubble.className = 'bubble';
-        bubble.innerHTML = text;
+        
+        if (isStreamingMessage) {
+            bubble.innerHTML = '';
+        } else {
+            bubble.innerHTML = text;
+        }
+        
         messageDiv.appendChild(bubble);
-        
-        // choices container
-        const choicesContainer = document.createElement('div');
-        choicesContainer.className = 'inline-choices';
-        
-        choicesArray.forEach(choice => {
-            const btn = document.createElement('button');
-            btn.className = 'choice-chip';
-            btn.innerText = choice.label;
-            btn.setAttribute('data-value', choice.value);
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                // handle selection
-                handleUserChoice(choice.value, choice.context);
-            });
-            choicesContainer.appendChild(btn);
-        });
-        
-        messageDiv.appendChild(choicesContainer);
         chatContainer.appendChild(messageDiv);
         scrollToBottom();
-        return messageDiv;
+        
+        return bubble;
     }
-    
-    // Generic handler for all user selections (choice chips)
-    function handleUserChoice(action, customData = null) {
-        // First, disable main menu options if not already disabled (first interaction)
-        if (!mainOptionsDisabled && currentState === "main_menu") {
-            disableMainMenuOptions();
-        }
+
+    function showTypingIndicator() {
+        const chatContainer = document.getElementById('chatContainer');
+        const indicator = document.createElement('div');
+        indicator.className = 'typing-indicator';
+        indicator.id = 'typing-indicator';
+        indicator.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+        chatContainer.appendChild(indicator);
+        scrollToBottom();
+    }
+
+    function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+    }
+
+    // ========== AI RESPONSE GENERATOR (NO BACKEND) ==========
+    function generateAIResponse(userMessage) {
+        const msg = userMessage.toLowerCase();
         
-        // Add user message representation based on action
-        let userReadable = "";
-        if (action === "buy_house") userReadable = "Buy a house";
-        else if (action === "buy_apartment") userReadable = "Buy an apartment";
-        else if (action === "buy_condo") userReadable = "Buy a condo";
-        else if (action === "something_else") userReadable = "Something else";
-        else if (action === "see_house_details") userReadable = "Tell me more about the houses";
-        else if (action === "see_apartment_details") userReadable = "Show apartment options";
-        else if (action === "see_condo_details") userReadable = "Show condo options";
-        else if (action === "request_virtual_tour") userReadable = "Request virtual tour";
-        else if (action === "contact_agent") userReadable = "Contact an agent";
-        else if (action === "back_to_main") userReadable = "Go back to main menu";
-        else if (action === "explore_something_else") userReadable = "Tell me more about other services";
-        else userReadable = "Select option";
-        
-        addMessage('user', userReadable);
-        
-        // --- AI logic based on current state & action ---
-        if (currentState === "main_menu") {
-            if (action === "buy_house") {
-                addAgentMessageWithChoices(
-                    "We have several houses for sale! 🏡<br><br>📍 Choose from modern villas, suburban family homes, and luxury estates. What would you like?",
-                    [
-                        { label: "📋 Show house listings", value: "see_house_details", context: "house" },
-                        { label: "📞 Contact an agent", value: "contact_agent", context: "general" },
-                        { label: "🔙 Back to menu", value: "back_to_main", context: "reset" }
-                    ]
-                );
-                currentState = "house_listing";
-            } 
-            else if (action === "buy_apartment") {
-                addAgentMessageWithChoices(
-                    "Excellent choice! 🏙️ We offer stunning downtown apartments, penthouses, and cozy lofts.<br><br> Which style sparks your interest?",
-                    [
-                        { label: "🏙️ View apartments", value: "see_apartment_details", context: "apartment" },
-                        { label: "📞 Schedule a viewing", value: "contact_agent", context: "general" },
-                        { label: "◀️ Main menu", value: "back_to_main", context: "reset" }
-                    ]
-                );
-                currentState = "apartment_listing";
-            }
-            else if (action === "buy_condo") {
-                addAgentMessageWithChoices(
-                    "Condos combine convenience and style! 🏢 Our portfolio includes beachfront condos, city-center gems, and resort-style communities.<br><br> How can I assist?",
-                    [
-                        { label: "✨ Show condo options", value: "see_condo_details", context: "condo" },
-                        { label: "📲 Talk to specialist", value: "contact_agent", context: "general" },
-                        { label: "↩️ Return to start", value: "back_to_main", context: "reset" }
-                    ]
-                );
-                currentState = "condo_listing";
-            }
-            else if (action === "something_else") {
-                addAgentMessageWithChoices(
-                    "Of course! Beyond residential sales, ACME Realty offers: 🏢 commercial spaces, 📈 investment properties, and 🌿 land acquisition.<br><br> What are you looking for?",
-                    [
-                        { label: "🏭 Commercial property", value: "explore_something_else", context: "commercial" },
-                        { label: "📊 Investment analysis", value: "explore_something_else", context: "investment" },
-                        { label: "🌳 Land / lots", value: "explore_something_else", context: "land" },
-                        { label: "🔙 Back", value: "back_to_main", context: "reset" }
-                    ]
-                );
-                currentState = "something_else_mode";
-            }
+        if (msg.includes('house') || msg.includes('buy a house') || msg.includes('villa')) {
+            return "🏡 Great choice! We have beautiful houses for sale:<br><br>• 🌲 Cedar Grove Villa - $450k, 4 bedrooms, pool, garden<br>• 🏡 Maple Street Colonial - $375k, 3 bedrooms, renovated kitchen<br>• 🌅 Sunset Ranch Estate - $895k, 5 bedrooms, lake view, 2 acres<br><br>Would you like a virtual tour or to speak with an agent?";
         }
-        else if (currentState === "house_listing") {
-            if (action === "see_house_details") {
-                addAgentMessageWithChoices(
-                    "🏡 **Featured Houses:**<br> • 🌲 Cedar Grove Villa - $450k, 4bd, pool<br> • 🏡 Maple Street Colonial - $375k, 3bd, garden<br> • 🌅 Sunset Ranch Estate - $895k, 5bd, lake view<br><br> Would you like a virtual tour or connect with an agent?",
-                    [
-                        { label: "🎥 Virtual tour request", value: "request_virtual_tour", context: "house" },
-                        { label: "📞 Call an agent", value: "contact_agent", context: "general" },
-                        { label: "🏠 Main menu", value: "back_to_main", context: "reset" }
-                    ]
-                );
-                currentState = "after_purchase_interest";
-            }
-            else if (action === "contact_agent") {
-                addMessage('agent', "📞 Our expert John is ready! Call (555) 202-REALTY or email john@acmerealty.com. I can also schedule a callback — just reply 'callback'.");
-                currentState = "after_purchase_interest";
-            }
-            else if (action === "back_to_main") {
-                resetToMainMenu();
-            }
-            else {
-                // fallback
-                resetToMainMenu();
-            }
+        else if (msg.includes('apartment') || msg.includes('flat')) {
+            return "🏙️ Excellent! Our premium apartments:<br><br>• 🌆 Metro Loft - $320k, 2 bedrooms, city view, gym<br>• 🌊 Harbor Lights - $540k, 3 bedrooms, waterfront, pool<br>• 🗼 Sky Tower - $780k, 2 bedrooms luxury penthouse, concierge<br><br>Interested in any of these?";
         }
-        else if (currentState === "apartment_listing") {
-            if (action === "see_apartment_details") {
-                addAgentMessageWithChoices(
-                    "🏙️ **Prime Apartments:**<br> • The Metro Loft - $320k, 2bd, cityv  sview<br> • Harbor Lights - $540k, 3bd, waterfront<br> • Sky Tower Residence - $780k, 2bd luxury penthouse<br><br> Want photos or a private showing?",
-                    [
-                        { label: "📸 Request photo gallery", value: "request_virtual_tour", context: "apartment" },
-                        { label: "📞 Contact agent", value: "contact_agent", context: "general" },
-                        { label: "🏠 Main menu", value: "back_to_main", context: "reset" }
-                    ]
-                );
-                currentState = "after_purchase_interest";
-            } else if (action === "contact_agent") {
-                addMessage('agent', "Our apartment specialist Maria is available now. Call (555) 987-UNIT or request a callback via the chat!");
-                currentState = "after_purchase_interest";
-            } else if (action === "back_to_main") {
-                resetToMainMenu();
-            } else {
-                resetToMainMenu();
-            }
+        else if (msg.includes('condo') || msg.includes('condominium')) {
+            return "🏢 Modern condos with premium amenities:<br><br>• 🏖️ Seaside Resort Condo - $410k, 2 bedrooms, beach access<br>• 🏙️ Urban Core Condo - $295k, 1 bedroom, modern downtown<br>• 🗻 The Pinnacle - $675k, 3 bedrooms, rooftop terrace<br><br>Shall I schedule a private showing?";
         }
-        else if (currentState === "condo_listing") {
-            if (action === "see_condo_details") {
-                addAgentMessageWithChoices(
-                    "🏢 **Hot Condo Deals:**<br> • Seaside Condo Resort - $410k, 2bd, beach access<br> • Urban Core Condos - $295k, 1bd, modern amenities<br> • The Pinnacle - $675k, 3bd, rooftop terrace<br><br> Let’s arrange a walkthrough?",
-                    [
-                        { label: "📅 Schedule showing", value: "contact_agent", context: "general" },
-                        { label: "💎 Get more details", value: "request_virtual_tour", context: "condo" },
-                        { label: "🔙 Back", value: "back_to_main", context: "reset" }
-                    ]
-                );
-                currentState = "after_purchase_interest";
-            } else if (action === "contact_agent") {
-                addMessage('agent', "Our condo concierge will reach out within minutes! You can also visit our office downtown.");
-                currentState = "after_purchase_interest";
-            } else if (action === "back_to_main") {
-                resetToMainMenu();
-            } else {
-                resetToMainMenu();
-            }
+        else if (msg.includes('price') || msg.includes('trend') || msg.includes('market')) {
+            return "📊 Current Real Estate Market Trends:<br><br>• 🏡 Single-family homes: +5.2% year-over-year<br>• 🏙️ Condos/Apartments: +4.1% in downtown areas<br>• 💰 Mortgage rates: 30-year fixed at 6.8%<br>• 📈 Inventory levels: Limited supply driving competition<br><br>Need personalized investment advice?";
         }
-        else if (currentState === "something_else_mode") {
-            if (action === "explore_something_else") {
-                let contextMsg = "";
-                if (customData === "commercial") contextMsg = "🏭 Commercial spaces: retail stores, office towers, industrial warehouses. Let's connect you with our commercial broker.";
-                else if (customData === "investment") contextMsg = "📈 Investment properties: multi-family units, REIT opportunities, high-yield rentals. Our financial advisors can assist.";
-                else if (customData === "land") contextMsg = "🌳 Land & lots: 5+ acre parcels, agricultural land, development-ready plots. Contact our land acquisition team.";
-                else contextMsg = "We offer tailored real estate solutions, property management, and auction services. How can we assist further?";
-                addAgentMessageWithChoices(
-                    `${contextMsg}<br><br>Would you like to schedule a consultation?`,
-                    [
-                        { label: "📅 Consultation", value: "contact_agent", context: "general" },
-                        { label: "🏠 Return to main", value: "back_to_main", context: "reset" }
-                    ]
-                );
-                currentState = "after_purchase_interest";
-            }
-            else if (action === "back_to_main") {
-                resetToMainMenu();
-            }
-            else {
-                resetToMainMenu();
-            }
+        else if (msg.includes('loan') || msg.includes('mortgage') || msg.includes('finance') || msg.includes('home loan')) {
+            return "🏦 Home Loan & Mortgage Guide:<br><br>✅ Pre-approval within 24 hours<br>✅ Down payment as low as 5% for qualified buyers<br>✅ Competitive rates from top lenders (6.5% - 7.2%)<br>✅ First-time home buyer programs available<br><br>Would you like a consultation with our mortgage specialist?";
         }
-        else if (currentState === "after_purchase_interest") {
-            if (action === "request_virtual_tour") {
-                addMessage('agent', "🎥 Awesome! Our virtual tour system will send a 3D walkthrough link to your email. Please provide your email address or simply reply 'demo'. John, would you like me to note your interest?");
-                // keep state
-            }
-            else if (action === "contact_agent") {
-                addMessage('agent', "📞 One moment, connecting you with a senior real estate advisor. Expect a call within 10 minutes or use live chat on our website. Thank you, John!");
-            }
-            else if (action === "back_to_main") {
-                resetToMainMenu();
-            }
-            else {
-                // any fallback option - maybe just main menu
-                resetToMainMenu();
-            }
+        else if (msg.includes('neighborhood') || msg.includes('area') || msg.includes('locality') || msg.includes('community')) {
+            return "📍 Popular Neighborhoods:<br><br>🌟 Downtown: Vibrant nightlife, walkable, luxury condos<br>🌳 Green Valley: Family-friendly, top-rated schools, parks<br>🏞️ Lakeside: Exclusive estates, water views, privacy<br>🏘️ Oakwood: Affordable homes, growing community<br><br>Tell me your budget and I'll suggest the perfect area!";
+        }
+        else if (msg.includes('sell') || msg.includes('selling')) {
+            return "💰 Selling your property?<br><br>• Free home valuation within 24 hours<br>• Professional photography & 3D tours<br>• Access to 10,000+ qualified buyers<br>• Our agents have 95% success rate at asking price<br><br>Ready to list your property?";
+        }
+        else if (msg.includes('rent') || msg.includes('rental')) {
+            return "🔑 Rental Properties Available:<br><br>• 🏠 2BR House - $2,200/month in Green Valley<br>• 🏙️ 1BR Apartment - $1,800/month Downtown<br>• 🏢 3BR Condo - $3,100/month Lakeside<br><br>Lease terms from 6-24 months available. Schedule a viewing today!";
+        }
+        else if (msg.includes('thank')) {
+            return "You're very welcome! 😊<br><br>I'm here 24/7 to help with all your real estate needs. Feel free to ask about properties, prices, neighborhoods, or schedule a personal consultation with our experts!";
+        }
+        else if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey')) {
+            return "Hello! 👋<br><br>Welcome to ACME Realty AI! I can help you find the perfect property, provide market insights, or schedule appointments with our agents.<br><br>What would you like to explore today?";
         }
         else {
-            // fallback reset
-            resetToMainMenu();
+            return "🌟 I'm your real estate AI assistant!<br><br>I can help you with:<br><br>• 🏠 Finding houses, apartments, or condos<br>• 📊 Current market trends & prices<br>• 🏦 Home loan & mortgage guidance<br>• 📍 Neighborhood insights<br>• 📅 Scheduling appointments with agents<br><br><strong>Try asking:</strong><br>'Show me houses', 'Apartment prices', 'Market trends', 'Home loan guide', or 'Schedule appointment'";
+        }
+    }
+
+    // Simulated streaming response with typing effect
+    async function simulateStreamingResponse(fullText) {
+        const bubble = addMessage('agent', '', true, true);
+        let accumulated = '';
+        const words = fullText.split(/(?=[<>])|(?<=[.!?])\s+|\s+/);
+        
+        for (let i = 0; i < words.length; i++) {
+            let chunk = words[i];
+            accumulated += chunk;
+            bubble.innerHTML = accumulated;
+            scrollToBottom();
+            await new Promise(resolve => setTimeout(resolve, 15 + Math.random() * 10));
+        }
+        return bubble;
+    }
+
+    async function sendMessage(messageText) {
+        if (isGenerating) return;
+        const trimmed = messageText.trim();
+        if (trimmed === "") return;
+        
+        // Check for appointment scheduling intent
+        if (trimmed.toLowerCase().includes('schedule') || 
+            trimmed.toLowerCase().includes('appointment') ||
+            trimmed.toLowerCase().includes('book a meeting') ||
+            trimmed.toLowerCase().includes('meet with agent')) {
+            addMessage('user', trimmed);
+            document.getElementById('chatTextInput').value = '';
+            addMessage('agent', "Sure! I'll help you schedule an appointment with our real estate expert. Please select your preferred date and time from the calendar below 👇");
+            setTimeout(() => {
+                openCalendar();
+            }, 500);
+            return;
+        }
+        
+        addMessage('user', trimmed);
+        document.getElementById('chatTextInput').value = '';
+        showTypingIndicator();
+        isGenerating = true;
+        
+        try {
+            const responseText = generateAIResponse(trimmed);
+            removeTypingIndicator();
+            await simulateStreamingResponse(responseText);
+            
+            // Add schedule suggestion button after response
+            addScheduleSuggestion();
+        } catch (error) {
+            removeTypingIndicator();
+            addMessage('agent', "I'm here to help with real estate! Try asking about houses, apartments, prices, or schedule an appointment.");
+        } finally {
+            isGenerating = false;
         }
     }
     
-    // Complete reset: clear all messages except initial agent greeting and fresh options
-    function resetToMainMenu() {
+    function addScheduleSuggestion() {
         const chatContainer = document.getElementById('chatContainer');
-        // Clear all messages
-        while (chatContainer.firstChild) {
-            chatContainer.removeChild(chatContainer.firstChild);
-        }
-        // Rebuild initial message exactly like original
-        const initialMsgDiv = document.createElement('div');
-        initialMsgDiv.className = 'message agent';
-        const nameSpan = document.createElement('div');
-        nameSpan.className = 'agent-name';
-        nameSpan.innerText = '🏢 ACME REALTY AI';
-        initialMsgDiv.appendChild(nameSpan);
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        bubble.innerHTML = 'Hello John!<br><br>Welcome to Real Estate Agency!<br>We have a lot of property for sale.<br><br>What would you like to do?';
-        initialMsgDiv.appendChild(bubble);
-        const choicesDiv = document.createElement('div');
-        choicesDiv.className = 'inline-choices';
-        choicesDiv.id = 'mainOptions';
-        const actions = [
-            { label: '🏠 Buy a house', value: 'buy_house' },
-            { label: '🏙️ Buy an apartment', value: 'buy_apartment' },
-            { label: '🏢 Buy a condo', value: 'buy_condo' },
-            { label: '✨ Something else', value: 'something_else' }
-        ];
-        actions.forEach(act => {
-            const btn = document.createElement('button');
-            btn.className = 'choice-chip';
-            btn.innerText = act.label;
-            btn.addEventListener('click', () => handleUserChoice(act.value));
-            choicesDiv.appendChild(btn);
-        });
-        initialMsgDiv.appendChild(choicesDiv);
-        chatContainer.appendChild(initialMsgDiv);
+        const scheduleDiv = document.createElement('div');
+        scheduleDiv.className = 'inline-choices';
+        scheduleDiv.style.marginTop = '10px';
         
-        // reset state variables
-        currentState = "main_menu";
-        mainOptionsDisabled = false;
+        const scheduleBtn = document.createElement('button');
+        scheduleBtn.className = 'choice-chip';
+        scheduleBtn.innerHTML = '📅 Schedule an Appointment';
+        scheduleBtn.style.background = '#f5b042';
+        scheduleBtn.style.color = '#0a2b3e';
+        scheduleBtn.style.fontWeight = 'bold';
+        scheduleBtn.onclick = () => {
+            openCalendar();
+        };
+        
+        scheduleDiv.appendChild(scheduleBtn);
+        chatContainer.appendChild(scheduleDiv);
         scrollToBottom();
     }
-    
-    // Attach reset button handler
-    document.getElementById('resetChatBtn').addEventListener('click', () => {
-        resetToMainMenu();
-    });
-    
-    // Add event listener to initial buttons via delegation (but also we recreate on reset)
-    // to be safe, we also attach listeners after DOM ready for dynamically created ones
-    document.addEventListener('click', (e) => {
-        if (e.target.classList && e.target.classList.contains('choice-chip')) {
-            // but we already attach specific per button in creation.
-            // ensure if any chip without handler (just in case) fallback
-            if (!e.target.getAttribute('data-listener-attached')) {
-                // but we handle via creation event listeners, safe.
+
+    // ========== CALENDAR & APPOINTMENT FUNCTIONS ==========
+    function openCalendar() {
+        const modal = document.getElementById('appointmentModal');
+        modal.style.display = 'flex';
+        currentStep = 1;
+        selectedDate = null;
+        selectedTime = null;
+        showStep1();
+        generateCalendar();
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('appointmentModal');
+        modal.style.display = 'none';
+        resetModal();
+    }
+
+    function resetModal() {
+        selectedDate = null;
+        selectedTime = null;
+        currentStep = 1;
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step3').style.display = 'none';
+        document.getElementById('appointmentForm').reset();
+    }
+
+    function showStep1() {
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step3').style.display = 'none';
+    }
+
+    function generateCalendar() {
+        const calendar = document.getElementById('calendar');
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+        
+        const firstDay = new Date(currentYear, currentMonth, 1);
+        const lastDay = new Date(currentYear, currentMonth + 1, 0);
+        
+        const daysInMonth = lastDay.getDate();
+        const startingDay = firstDay.getDay();
+        
+        calendar.innerHTML = '';
+        
+        // Day headers
+        const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        dayHeaders.forEach(day => {
+            const header = document.createElement('div');
+            header.textContent = day;
+            header.style.fontWeight = 'bold';
+            header.style.textAlign = 'center';
+            header.style.padding = '0.5rem';
+            header.style.color = '#0a2b3e';
+            calendar.appendChild(header);
+        });
+        
+        // Empty cells for days before month starts
+        for (let i = 0; i < startingDay; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'calendar-day disabled';
+            emptyCell.textContent = '';
+            calendar.appendChild(emptyCell);
+        }
+        
+        // Generate days
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(currentYear, currentMonth, day);
+            const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'calendar-day';
+            dayDiv.textContent = day;
+            
+            // Disable past dates
+            if (date < today && date.toDateString() !== today.toDateString()) {
+                dayDiv.classList.add('disabled');
+            } else {
+                dayDiv.onclick = () => selectDate(dateStr, dayDiv);
             }
+            
+            if (selectedDate === dateStr) {
+                dayDiv.classList.add('selected');
+            }
+            
+            calendar.appendChild(dayDiv);
+        }
+    }
+
+    function selectDate(dateStr, element) {
+        document.querySelectorAll('.calendar-day').forEach(el => {
+            el.classList.remove('selected');
+        });
+        element.classList.add('selected');
+        selectedDate = dateStr;
+    }
+
+    function nextToTime() {
+        if (!selectedDate) {
+            alert('Please select a date first');
+            return;
+        }
+        currentStep = 2;
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+        document.getElementById('step3').style.display = 'none';
+        generateTimeSlots();
+    }
+
+    function generateTimeSlots() {
+        const timeSlotsContainer = document.getElementById('timeSlots');
+        const timeSlots = [
+            '09:00 AM', '10:00 AM', '11:00 AM', 
+            '12:00 PM', '01:00 PM', '02:00 PM', 
+            '03:00 PM', '04:00 PM', '05:00 PM'
+        ];
+        
+        timeSlotsContainer.innerHTML = '';
+        selectedTime = null;
+        
+        timeSlots.forEach(slot => {
+            const slotDiv = document.createElement('div');
+            slotDiv.className = 'time-slot';
+            slotDiv.textContent = slot;
+            slotDiv.onclick = () => {
+                document.querySelectorAll('.time-slot').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                slotDiv.classList.add('selected');
+                selectedTime = slot;
+            };
+            timeSlotsContainer.appendChild(slotDiv);
+        });
+    }
+
+    function nextToForm() {
+        if (!selectedTime) {
+            alert('Please select a time slot');
+            return;
+        }
+        currentStep = 3;
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step3').style.display = 'block';
+    }
+
+    function prevToDate() {
+        if (currentStep === 2) {
+            currentStep = 1;
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+        } else if (currentStep === 3) {
+            currentStep = 2;
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('step3').style.display = 'none';
+        }
+    }
+
+    function prevToTime() {
+        if (currentStep === 3) {
+            currentStep = 2;
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('step3').style.display = 'none';
+        }
+    }
+
+    // Handle form submission
+    document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const fullName = document.getElementById('fullName').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+        const propertyInterest = document.getElementById('propertyInterest').value;
+        const message = document.getElementById('message').value;
+        
+        if (!fullName || !phone || !email) {
+            alert('Please fill all required fields');
+            return;
+        }
+        
+        // Format date
+        const [year, month, day] = selectedDate.split('-');
+        const formattedDate = `${day}/${month}/${year}`;
+        
+        // Create appointment summary
+        const appointmentSummary = `
+📅 <strong>Appointment Confirmed!</strong><br><br>
+<strong>Date:</strong> ${formattedDate}<br>
+<strong>Time:</strong> ${selectedTime}<br>
+<strong>Name:</strong> ${fullName}<br>
+<strong>Phone:</strong> ${phone}<br>
+<strong>Email:</strong> ${email}<br>
+<strong>Property Interest:</strong> ${propertyInterest}<br>
+${message ? `<strong>Message:</strong> ${message}<br>` : ''}
+<br>
+✨ A confirmation has been sent to ${email}<br>
+📞 Our agent will call you at ${phone} shortly before the appointment.
+        `;
+        
+        // Close modal
+        closeModal();
+        
+        // Add confirmation message to chat
+        addMessage('agent', appointmentSummary);
+        
+        // Reset form
+        document.getElementById('appointmentForm').reset();
+    });
+
+    function resetChat() {
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.innerHTML = '';
+        
+        const welcomeHTML = `Hello! 👋<br><br>Welcome to ACME Realty AI! I'm your intelligent property assistant.<br><br>🏡 I can help you with:<br>• Property listings and prices<br>• Neighborhood insights<br>• Market trends and analysis<br>• Home loan guidance<br>• Investment advice<br>• 📅 Schedule appointments with our agents<br><br><strong>What would you like to know about real estate today?</strong>`;
+        
+        addMessage('agent', welcomeHTML, true);
+        
+        // Add quick suggestion chips
+        const suggestionsDiv = document.createElement('div');
+        suggestionsDiv.className = 'inline-choices';
+        const suggestions = [
+            { label: '🏠 Show me houses', query: 'Show me houses for sale' },
+            { label: '💰 Price trends', query: 'What are current real estate prices?' },
+            { label: '📅 Schedule Appointment', query: 'schedule appointment' },
+            { label: '🏦 Home loan guide', query: 'How do I get a home loan?' }
+        ];
+        
+        suggestions.forEach(sug => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-chip';
+            btn.innerText = sug.label;
+            btn.onclick = () => {
+                document.getElementById('chatTextInput').value = sug.query;
+                sendMessage(sug.query);
+            };
+            suggestionsDiv.appendChild(btn);
+        });
+        
+        chatContainer.appendChild(suggestionsDiv);
+        scrollToBottom();
+    }
+
+    // ========== EVENT LISTENERS ==========
+    document.getElementById('resetChatBtn').addEventListener('click', resetChat);
+    
+    const sendBtn = document.getElementById('sendChatBtn');
+    const chatInput = document.getElementById('chatTextInput');
+    
+    function handleSendMessage() {
+        const msg = chatInput.value.trim();
+        if (msg === "" || isGenerating) return;
+        sendMessage(msg);
+    }
+    
+    sendBtn.addEventListener('click', handleSendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSendMessage();
         }
     });
     
-    // Initialize: ensure that the initial buttons have correct handlers (they are created statically in HTML but we override by reset logic)
-    // However, the initial HTML contains static #mainOptions buttons. We must attach listeners to them as well.
-    function bindInitialStaticButtons() {
-        const mainStatic = document.querySelectorAll('#mainOptions .choice-chip');
-        mainStatic.forEach(btn => {
-            // remove existing listeners by replacing with clone? but easier: add new click, prevent duplicate.
-            // But we have reset function that rebuilds, but if user clicks static before any action, we want to handle.
-            // we can add listener, but we also don't want double handler. We'll replace with fresh listener.
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            const actionVal = newBtn.getAttribute('data-action');
-            if (actionVal) {
-                newBtn.addEventListener('click', () => handleUserChoice(actionVal));
-            } else {
-                // infer from text
-                let inferred = "";
-                if (newBtn.innerText.includes("house")) inferred = "buy_house";
-                else if (newBtn.innerText.includes("apartment")) inferred = "buy_apartment";
-                else if (newBtn.innerText.includes("condo")) inferred = "buy_condo";
-                else if (newBtn.innerText.includes("Something")) inferred = "something_else";
-                if (inferred) newBtn.addEventListener('click', () => handleUserChoice(inferred));
-            }
-        });
-    }
+    // Initialize chat
+    resetChat();
     
-    // call initial binding for static HTML
-    bindInitialStaticButtons();
-    // also handle case where reset re-creates so inside reset we create fresh listeners, perfect.
-    // ensure mainOptionsDisabled flag reset.
-    scrollToBottom();
-
-    async function askAI(question) {
-
-  const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer YOUR_API_KEY"
-    },
-    body: JSON.stringify({
-      model: "deepseek-chat",
-      messages: [
-        { role: "system", content: "You are a real estate assistant." },
-        { role: "user", content: question }
-      ]
-    })
-  });
-
-  const data = await response.json();
-  return data.choices[0].message.content;
-}
-
-    async function handleAI() {
-  const q = document.getElementById("userQuery").value;
-
-  if(!q) return;
-
-  addMsg(q, "user");
-
-  addMsg("Typing...");
-
-  const reply = await askAI(q);
-
-  addMsg(reply);
-}
+    // Make modal functions globally accessible
+    window.closeModal = closeModal;
+    window.nextToTime = nextToTime;
+    window.prevToDate = prevToDate;
+    window.nextToForm = nextToForm;
+    window.prevToTime = prevToTime;
+    window.openCalendar = openCalendar;
 </script>
 </body>
 </html>
